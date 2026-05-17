@@ -34,6 +34,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://ffemeheels.com",
+    "https://www.ffemeheels.com",
+]
+
 # Application definition
 
 INSTALLED_APPS = [
