@@ -1,0 +1,355 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFeme Heels</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ========== BARRA DE NAVEGACIÓN ========== -->
+<header class="barra">
+    <div class="nav-izquierda">
+        <a href="{% url 'productos' %}" class="nav-link">Colecciones</a>
+        <a href="#novedades" class="nav-link">Novedades</a>
+    </div>
+
+    <div class="logo">
+        <a href="{% url 'index' %}">FFeme Heels</a>
+    </div>
+
+    <div class="nav-derecha">
+        {% if user.is_authenticated %}
+            <!-- Íconos solo visibles para usuarios con sesión -->
+            <button type="button" class="nav-icon js-search-toggle" title="Buscar" aria-label="Buscar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+            </button>
+            <a href="{% url 'wishlist' %}" class="nav-icon" title="Wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </a>
+            <a href="{% url 'notificaciones' %}" class="nav-icon" title="Notificaciones">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </a>
+            <a href="{% url 'carrito' %}" class="nav-icon carrito-icon" title="Carrito">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {% if carrito_count > 0 %}
+                <span class="badge">{{ carrito_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{% url 'perfil' %}" class="nav-icon" title="Mi cuenta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+        {% else %}
+            <!-- Botón de acceso para usuarios no autenticados -->
+            <a href="{% url 'login' %}" class="btn-acceder">Acceder</a>
+            <a href="{% url 'registro' %}" class="btn-acceder">Crear cuenta</a>
+        {% endif %}
+    </div>
+</header>
+
+<div id="search-overlay" class="search-overlay" aria-hidden="true">
+    <div class="search-panel" role="dialog" aria-modal="true" aria-label="Buscador">
+        <div class="search-panel-header">
+            <form id="global-search-form" action="{% url 'productos' %}" method="GET" autocomplete="off">
+                <input id="global-search-input" type="search" name="q" placeholder="Buscar productos, categorías o estilos..." />
+                <button type="submit" class="btn-filtrar">Buscar</button>
+            </form>
+            <button type="button" id="search-close" class="btn-limpiar">Cerrar</button>
+        </div>
+        <div class="search-suggestions">
+            <div>
+                <h3>Recientes</h3>
+                <ul id="search-recientes-list"></ul>
+            </div>
+            <div>
+                <h3>Sugerencias</h3>
+                <ul id="search-sugerencias-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== BANNER CARRUSEL ========== -->
+<section class="banner-carrusel">
+    <div class="imagenes-wrapper">
+        <div class="slide" style="background-image: url('{% static 'imagenes/banner1.jpg' %}');">
+            <div class="slide-texto">
+                <span class="slide-subtitulo">Nueva temporada</span>
+                <h1>Elegancia en cada paso</h1>
+                <a href="{% url 'productos' %}" class="btn-slide">Ver colección</a>
+            </div>
+        </div>
+        <div class="slide" style="background-image: url('{% static 'imagenes/banner2.jpg' %}');">
+            <div class="slide-texto">
+                <span class="slide-subtitulo">Recién llegados</span>
+                <h1>Nuevas Colecciones</h1>
+                <a href="{% url 'productos' %}" class="btn-slide">Explorar</a>
+            </div>
+        </div>
+        <div class="slide" style="background-image: url('{% static 'imagenes/banner3.jpg' %}');">
+            <div class="slide-texto">
+                <span class="slide-subtitulo">Edición limitada</span>
+                <h1>Define tu estilo</h1>
+                <a href="{% url 'productos' %}" class="btn-slide">Descubrir</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicadores del carrusel -->
+    <div class="slide-dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+</section>
+
+<!-- ========== NOVEDADES ========== -->
+<section class="productos" id="novedades">
+    <div class="seccion-header">
+        <h2>Novedades</h2>
+        <a href="{% url 'productos' %}" class="ver-todo">Ver todo →</a>
+    </div>
+
+    <div class="carrusel-contenedor">
+        {% for producto in novedades %}
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <a href="{% url 'producto_detalle' producto.id %}">
+                    <img src="{% if producto.imagen_url %}{{ producto.imagen_url }}{% else %}{{ producto.imagen.url }}{% endif %}" alt="{{ producto.nombre }}">
+                </a>
+                {% if user.is_authenticated %}
+                <button class="btn-wishlist" data-id="{{ producto.id }}" title="Agregar a wishlist">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                </button>
+                {% endif %}
+            </div>
+            <p class="card-nombre">{{ producto.nombre }}</p>
+            <span class="card-precio">${{ producto.precio }} MXN</span>
+        </div>
+        {% empty %}
+        <!-- Fallback estático mientras no hay productos en la DB -->
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/tacon sileto grande.jpg' %}" alt="Tacon Siletto">
+            </div>
+            <p class="card-nombre">Tacon Siletto</p>
+            <span class="card-precio">$1,400 MXN</span>
+        </div>
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/tacon sileto borgoña.jpg' %}" alt="Tacon Kitten">
+            </div>
+            <p class="card-nombre">Tacon Kitten</p>
+            <span class="card-precio">$1,200 MXN</span>
+        </div>
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/botin de tacon redondo.jpg' %}" alt="Botines">
+            </div>
+            <p class="card-nombre">Botines</p>
+            <span class="card-precio">$2,300 MXN</span>
+        </div>
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/bota alta.jpg' %}" alt="Botas Altas">
+            </div>
+            <p class="card-nombre">Botas Altas</p>
+            <span class="card-precio">$1,940 MXN</span>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ========== NUEVAS COLECCIONES ========== -->
+<section class="productos" id="colecciones">
+    <div class="seccion-header">
+        <h2>Nuevas Colecciones</h2>
+        <a href="{% url 'productos' %}" class="ver-todo">Ver todo →</a>
+    </div>
+
+    <div class="carrusel-contenedor">
+        {% for producto in colecciones %}
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <a href="{% url 'producto_detalle' producto.id %}">
+                    <img src="{% if producto.imagen_url %}{{ producto.imagen_url }}{% else %}{{ producto.imagen.url }}{% endif %}" alt="{{ producto.nombre }}">
+                </a>
+            </div>
+            <p class="card-nombre">{{ producto.nombre }}</p>
+            <span class="card-precio">${{ producto.precio }} MXN</span>
+        </div>
+        {% empty %}
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/tacon sileto con moño.jpg' %}" alt="Tacon con moño">
+            </div>
+            <p class="card-nombre">Tacon Siletto con moño</p>
+            <span class="card-precio">$2,500 MXN</span>
+        </div>
+        <div class="card">
+            <div class="card-imagen-wrap">
+                <img src="{% static 'imagenes/Tacon kitten con correa de piedreria.jpg' %}" alt="Tacon Piedreria">
+            </div>
+            <p class="card-nombre">Tacon con Piedrería</p>
+            <span class="card-precio">$2,775 MXN</span>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-marca">
+            <span class="logo">FFeme Heels</span>
+            <p>Elegancia en cada paso.</p>
+        </div>
+        <div class="footer-links">
+            <a href="{% url 'sobre_nosotras' %}">Sobre nosotras</a>
+            <a href="#">Envíos</a>
+            <a href="#">Devoluciones</a>
+            <a href="mailto:ffemeheels@gmail.com">ffemeheels@gmail.com</a>
+        </div>
+    </div>
+    <div class="footer-copy">
+        &copy; {% now "Y" %} FFeme Heels. Todos los derechos reservados.
+    </div>
+</footer>
+
+<script>
+(function () {
+    const overlay = document.getElementById('search-overlay');
+    const input = document.getElementById('global-search-input');
+    const form = document.getElementById('global-search-form');
+    const closeBtn = document.getElementById('search-close');
+    const toggles = document.querySelectorAll('.js-search-toggle');
+    const recientesList = document.getElementById('search-recientes-list');
+    const sugerenciasList = document.getElementById('search-sugerencias-list');
+
+    let currentSuggestions = [];
+    let activeIndex = -1;
+    let debounceId = null;
+
+    function csrfToken() {
+        const match = document.cookie.match(/csrftoken=([^;]+)/);
+        return match ? match[1] : '';
+    }
+
+    function openSearch() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        setTimeout(() => input.focus(), 0);
+        cargarSugerencias('');
+    }
+
+    function closeSearch() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        activeIndex = -1;
+    }
+
+    function renderList(el, items, emptyText) {
+        el.innerHTML = '';
+        if (!items.length) {
+            const li = document.createElement('li');
+            li.className = 'search-empty';
+            li.textContent = emptyText;
+            el.appendChild(li);
+            return;
+        }
+        items.forEach((txt, idx) => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'search-item';
+            btn.textContent = txt;
+            btn.addEventListener('click', () => {
+                input.value = txt;
+                form.submit();
+            });
+            if (el.id === 'search-sugerencias-list' && idx === activeIndex) {
+                btn.classList.add('active');
+            }
+            li.appendChild(btn);
+            el.appendChild(li);
+        });
+    }
+
+    async function cargarSugerencias(q) {
+        const res = await fetch(`{% url 'buscar_sugerencias' %}?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        currentSuggestions = data.sugerencias || [];
+        activeIndex = -1;
+        renderList(recientesList, data.recientes || [], 'Sin búsquedas recientes');
+        renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+    }
+
+    toggles.forEach(btn => btn.addEventListener('click', openSearch));
+    closeBtn.addEventListener('click', closeSearch);
+
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeSearch();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) {
+            closeSearch();
+        }
+    });
+
+    input.addEventListener('input', function () {
+        clearTimeout(debounceId);
+        debounceId = setTimeout(() => cargarSugerencias(input.value), 180);
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if (!currentSuggestions.length) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % currentSuggestions.length;
+            renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+            renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            input.value = currentSuggestions[activeIndex];
+            form.submit();
+        }
+    });
+
+    form.addEventListener('submit', async function () {
+        const q = input.value.trim();
+        if (!q) return;
+        try {
+            await fetch('{% url "busquedas_recientes" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    'X-CSRFToken': csrfToken(),
+                },
+                body: `q=${encodeURIComponent(q)}`
+            });
+        } catch (e) {}
+    });
+})();
+</script>
+</body>
+</html>

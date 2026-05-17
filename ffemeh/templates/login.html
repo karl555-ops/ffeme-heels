@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceder — FFeme Heels</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+
+<div class="login-fondo">
+    <div class="login-fondo-imagen" style="background-image: url('{% static 'imagenes/banner1.jpg' %}');"></div>
+    <div class="login-fondo-overlay"></div>
+</div>
+
+<div class="login-panel">
+    <a href="{% url 'index' %}" class="login-logo">FFeme Heels</a>
+    <p class="login-subtitulo">Tu mundo de elegancia te espera</p>
+
+    {% if messages %}
+    <ul class="login-mensajes">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="login-tabs">
+        <button class="tab-btn {% if active_tab == 'login' %}activo{% endif %}" id="tab-login" onclick="mostrarTab('login')" type="button">Acceder</button>
+        <button class="tab-btn {% if active_tab == 'registro' %}activo{% endif %}" id="tab-registro" onclick="mostrarTab('registro')" type="button">Crear cuenta</button>
+    </div>
+
+    <div class="tab-contenido {% if active_tab != 'login' %}oculto{% endif %}" id="form-login">
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="login">
+
+            {% if login_form.non_field_errors %}
+            <div class="login-mensajes error">
+                {% for error in login_form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="campo">
+                <label for="{{ login_form.identificador.id_for_label }}">Usuario o correo electrónico</label>
+                {{ login_form.identificador }}
+                {% for error in login_form.identificador.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                <label for="{{ login_form.password.id_for_label }}">Contraseña</label>
+                {{ login_form.password }}
+                {% for error in login_form.password.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn-negro">Acceder</button>
+        </form>
+    </div>
+
+    <div class="tab-contenido {% if active_tab != 'registro' %}oculto{% endif %}" id="form-registro">
+        <form method="POST" action="{% url 'registro' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="registro">
+
+            <div class="campo">
+                <label for="{{ registro_form.username.id_for_label }}">Usuario</label>
+                {{ registro_form.username }}
+                {% for error in registro_form.username.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                <label for="{{ registro_form.email.id_for_label }}">Correo electrónico</label>
+                {{ registro_form.email }}
+                {% for error in registro_form.email.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                <label for="{{ registro_form.password1.id_for_label }}">Contraseña</label>
+                {{ registro_form.password1 }}
+                {% for error in registro_form.password1.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="campo">
+                <label for="{{ registro_form.password2.id_for_label }}">Confirmar contraseña</label>
+                {{ registro_form.password2 }}
+                {% for error in registro_form.password2.errors %}
+                <small class="error-text">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn-negro">Crear cuenta</button>
+        </form>
+    </div>
+
+    <a href="{% url 'index' %}" class="login-volver">← Volver a la tienda</a>
+</div>
+
+<script>
+    function mostrarTab(tab) {
+        document.querySelectorAll('.tab-contenido').forEach(el => el.classList.add('oculto'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('activo'));
+        document.getElementById('form-' + tab).classList.remove('oculto');
+        document.getElementById('tab-' + tab).classList.add('activo');
+    }
+</script>
+
+</body>
+</html>

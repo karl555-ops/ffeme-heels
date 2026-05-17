@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | FFeme Heels</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="barra">
+    <div class="nav-izquierda">
+        <a href="{% url 'productos' %}" class="nav-link">Colecciones</a>
+        <a href="{% url 'index' %}#novedades" class="nav-link">Novedades</a>
+    </div>
+    <div class="logo">
+        <a href="{% url 'index' %}">FFeme Heels</a>
+    </div>
+    <div class="nav-derecha">
+        <a href="{% url 'notificaciones' %}" class="nav-link">Notificaciones</a>
+        <a href="{% url 'carrito' %}" class="nav-link">Carrito ({{ carrito_count }})</a>
+        <a href="{% url 'logout' %}" class="nav-link">Cerrar sesión</a>
+    </div>
+</header>
+
+<main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 20px;">Mi perfil</h1>
+
+    <section style="border: 1px solid #e7e1db; border-radius: 12px; padding: 20px; background: #fff;">
+        <p><strong>Usuario:</strong> {{ perfil_usuario.username }}</p>
+        <p><strong>Nombre:</strong> {{ perfil_usuario.first_name|default:"—" }}</p>
+        <p><strong>Apellido:</strong> {{ perfil_usuario.last_name|default:"—" }}</p>
+        <p><strong>Correo:</strong> {{ perfil_usuario.email|default:"—" }}</p>
+        <p><strong>Miembro desde:</strong> {{ perfil_usuario.date_joined|date:"d/m/Y H:i" }}</p>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ producto.nombre }} — FFeme Heels</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="barra">
+    <div class="nav-izquierda">
+        <a href="{% url 'productos' %}" class="nav-link nav-activo">Colecciones</a>
+        <a href="{% url 'index' %}#novedades" class="nav-link">Novedades</a>
+    </div>
+
+    <div class="logo">
+        <a href="{% url 'index' %}">FFeme Heels</a>
+    </div>
+
+    <div class="nav-derecha">
+        {% if user.is_authenticated %}
+            <a href="{% url 'wishlist' %}" class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </a>
+            <a href="{% url 'carrito' %}" class="nav-icon carrito-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {% if carrito_count > 0 %}<span class="badge">{{ carrito_count }}</span>{% endif %}
+            </a>
+            <a href="{% url 'perfil' %}" class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-acceder">Acceder</a>
+        {% endif %}
+    </div>
+</header>
+
+<main class="detalle-main">
+    <div class="detalle-grid">
+        <section class="detalle-galeria">
+            <div class="detalle-imagen-wrap">
+                <img class="detalle-imagen" src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+            </div>
+            <div class="detalle-miniaturas">
+                <button class="miniatura activa" type="button">
+                    <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+                </button>
+                <button class="miniatura" type="button">
+                    <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+                </button>
+                <button class="miniatura" type="button">
+                    <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+                </button>
+                <button class="miniatura" type="button">
+                    <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+                </button>
+            </div>
+        </section>
+
+        <section class="detalle-info">
+            <div class="detalle-titulo-row">
+                <h1>{{ producto.nombre }}</h1>
+                {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'agregar_wishlist' producto.id %}">
+                    {% csrf_token %}
+                    <button class="btn-wishlist-detalle" type="submit" title="Agregar a wishlist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <p class="detalle-descripcion">{{ producto.descripcion }}</p>
+            <p class="detalle-precio">${{ producto.precio }} MXN</p>
+
+            <div class="detalle-meta">
+                <span><strong>Talla:</strong> {{ producto.talla|default:"Única" }}</span>
+                <span><strong>Disponibilidad:</strong> En stock</span>
+                <span><strong>Envío:</strong> Nacional (México)</span>
+            </div>
+
+            <div class="detalle-opciones">
+                <div>
+                    <span class="opcion-label">Tallas</span>
+                    <div class="chips-tallas">
+                        <span class="chip-talla">3</span>
+                        <span class="chip-talla">4</span>
+                        <span class="chip-talla">5</span>
+                        <span class="chip-talla">6</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detalle-acciones-columna">
+                <form method="POST" action="{% url 'agregar_carrito' producto.id %}">
+                    {% csrf_token %}
+                    <button class="btn-agregar-detalle" type="submit">Agregar al carrito</button>
+                </form>
+                <a href="{% url 'checkout_envio_pago' %}" class="btn-comprar-ya">Comprar ahora</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-marca">
+            <span class="logo">FFeme Heels</span>
+            <p>Elegancia en cada paso.</p>
+        </div>
+        <div class="footer-links">
+            <a href="{% url 'sobre_nosotras' %}">Sobre nosotras</a>
+            <a href="#">Envíos</a>
+            <a href="#">Devoluciones</a>
+            <a href="#">Contacto</a>
+        </div>
+    </div>
+    <div class="footer-copy">&copy; {% now "Y" %} FFeme Heels.</div>
+</footer>
+
+</body>
+</html>

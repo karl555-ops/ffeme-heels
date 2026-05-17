@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura {{ factura.folio }} — FFAME HEELS</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body class="factura-body">
+<main class="factura-hoja">
+    <header class="factura-header">
+        <h1>FFAME HEELS</h1>
+        <h2>FACTURA</h2>
+    </header>
+
+    <section class="factura-top">
+        <div>
+            <p><strong>Email:</strong> {% if orden.usuario %}{{ orden.usuario.email }}{% endif %}</p>
+            <p><strong>Teléfono:</strong> {{ direccion.telefono }}</p>
+            <p><strong>Dirección:</strong> {{ direccion.calle }}, {{ direccion.colonia }}, {{ direccion.ciudad }}, {{ direccion.estado }}, CP: {{ direccion.codigo_postal }}</p>
+        </div>
+        <div class="factura-meta">
+            <p><strong>Factura n°</strong> {{ factura.folio }}</p>
+            <p><strong>Fecha</strong> {{ factura.fecha }}</p>
+        </div>
+    </section>
+
+    <section class="factura-tabla">
+        <div class="factura-head row">
+            <span>Artículo</span>
+            <span>Cantidad</span>
+            <span>Costo unitario</span>
+            <span>Total</span>
+        </div>
+        {% for item in items %}
+        <div class="row">
+            <span>{{ item.producto_nombre }}</span>
+            <span>{{ item.cantidad }}</span>
+            <span>${{ item.producto_precio }}</span>
+            <span>${{ item.subtotal }}</span>
+        </div>
+        {% endfor %}
+    </section>
+
+    <section class="factura-totales">
+        <p><strong>Subtotal</strong> <span>${{ subtotal }}</span></p>
+        <p><strong>IVA (16%)</strong> <span>${{ iva_monto }}</span></p>
+        <p class="grand-total"><strong>TOTAL</strong> <span>${{ total_con_iva }}</span></p>
+    </section>
+
+    <p class="factura-gracias">GRACIAS POR SU COMPRA</p>
+
+    <section class="factura-compra-info">
+        <h3>INFORMACIÓN DE COMPRA</h3>
+        <p><strong>Banco:</strong> {{ factura.banco }}</p>
+        <p><strong>N.º de cuenta:</strong> {{ factura.numero_cuenta }}</p>
+        <p><strong>Titular:</strong> {{ factura.titular_cuenta }}</p>
+        <p><strong>Método:</strong> {{ pago.get_marca_display }} {{ pago.get_tipo_display }} ****{{ pago.ultimos_4 }}</p>
+    </section>
+</main>
+</body>
+</html>

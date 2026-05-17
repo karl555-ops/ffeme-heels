@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones | FFeme Heels</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="barra">
+    <div class="nav-izquierda">
+        <a href="{% url 'productos' %}" class="nav-link">Colecciones</a>
+        <a href="{% url 'index' %}#novedades" class="nav-link">Novedades</a>
+    </div>
+    <div class="logo">
+        <a href="{% url 'index' %}">FFeme Heels</a>
+    </div>
+    <div class="nav-derecha">
+        <a href="{% url 'wishlist' %}" class="nav-link">Wishlist</a>
+        <a href="{% url 'carrito' %}" class="nav-link">Carrito ({{ carrito_count }})</a>
+        <a href="{% url 'perfil' %}" class="nav-link">Mi cuenta</a>
+    </div>
+</header>
+
+<main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 20px;">Notificaciones</h1>
+
+    {% if notificaciones %}
+        <div style="display: grid; gap: 16px;">
+            {% for n in notificaciones %}
+                <article style="border: 1px solid #e7e1db; border-radius: 12px; padding: 16px; background: #fff;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 1.25rem;">{{ n.titulo }}</h2>
+                    <p style="margin: 0; color: #444;">{{ n.mensaje }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No tienes notificaciones por ahora.</p>
+    {% endif %}
+</main>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colecciones — FFeme Heels</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ========== BARRA DE NAVEGACIÓN ========== -->
+<header class="barra">
+    <div class="nav-izquierda">
+        <a href="{% url 'productos' %}" class="nav-link nav-activo">Colecciones</a>
+        <a href="{% url 'index' %}#novedades" class="nav-link">Novedades</a>
+    </div>
+
+    <div class="logo">
+        <a href="{% url 'index' %}">FFeme Heels</a>
+    </div>
+
+    <div class="nav-derecha">
+        {% if user.is_authenticated %}
+            <button type="button" class="nav-icon js-search-toggle" title="Buscar" aria-label="Buscar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+            </button>
+            <a href="{% url 'wishlist' %}" class="nav-icon" title="Wishlist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+            </a>
+            <a href="{% url 'notificaciones' %}" class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </a>
+            <a href="{% url 'carrito' %}" class="nav-icon carrito-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                {% if carrito_count > 0 %}<span class="badge">{{ carrito_count }}</span>{% endif %}
+            </a>
+            <a href="{% url 'perfil' %}" class="nav-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-acceder">Acceder</a>
+        {% endif %}
+    </div>
+</header>
+
+<div id="search-overlay" class="search-overlay" aria-hidden="true">
+    <div class="search-panel" role="dialog" aria-modal="true" aria-label="Buscador">
+        <div class="search-panel-header">
+            <form id="global-search-form" action="{% url 'productos' %}" method="GET" autocomplete="off">
+                <input id="global-search-input" type="search" name="q" value="{{ q|default:'' }}" placeholder="Buscar productos, categorías o estilos..." />
+                <button type="submit" class="btn-filtrar">Buscar</button>
+            </form>
+            <button type="button" id="search-close" class="btn-limpiar">Cerrar</button>
+        </div>
+        <div class="search-suggestions">
+            <div>
+                <h3>Recientes</h3>
+                <ul id="search-recientes-list"></ul>
+            </div>
+            <div>
+                <h3>Sugerencias</h3>
+                <ul id="search-sugerencias-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== ENCABEZADO DE PÁGINA ========== -->
+<div class="pagina-header">
+    <h1>Colecciones</h1>
+    <p>{{ productos.paginator.count }} producto{{ productos.paginator.count|pluralize }} encontrado{{ productos.paginator.count|pluralize }}</p>
+</div>
+
+<!-- ========== FILTROS + GRID ========== -->
+<div class="productos-layout">
+
+    <!-- Sidebar de filtros -->
+    <aside class="filtros">
+        <form method="GET" action="{% url 'productos' %}">
+            <div class="filtro-grupo">
+                <h3>Buscar</h3>
+                <input type="text" name="q" value="{{ q|default:'' }}" placeholder="Nombre o descripción">
+            </div>
+
+            <div class="filtro-grupo">
+                <h3>Categoría</h3>
+                <label><input type="radio" name="categoria" value="" {% if not categoria_actual %}checked{% endif %}> Todas</label>
+                {% for cat in categorias %}
+                <label>
+                    <input type="radio" name="categoria" value="{{ cat.slug }}" {% if categoria_actual == cat.slug %}checked{% endif %}>
+                    {{ cat.nombre }}
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="filtro-grupo">
+                <h3>Precio</h3>
+                <label><input type="radio" name="precio" value="" {% if not precio_actual %}checked{% endif %}> Todos</label>
+                <label><input type="radio" name="precio" value="1900-2500" {% if precio_actual == '1900-2500' %}checked{% endif %}> $1,900 – $2,500</label>
+                <label><input type="radio" name="precio" value="2500-3500" {% if precio_actual == '2500-3500' %}checked{% endif %}> $2,500 – $3,500</label>
+                <label><input type="radio" name="precio" value="3500-99999" {% if precio_actual == '3500-99999' %}checked{% endif %}> Más de $3,500</label>
+            </div>
+
+            <button type="submit" class="btn-filtrar">Aplicar filtros</button>
+            <a href="{% url 'productos' %}" class="btn-limpiar">Limpiar</a>
+        </form>
+    </aside>
+
+    <!-- Grid de productos -->
+    <div class="productos-grid-area">
+
+        <!-- Ordenar -->
+        <div class="ordenar-barra">
+            <form method="GET" action="{% url 'productos' %}" id="form-orden">
+                <input type="hidden" name="q" value="{{ q|default:'' }}">
+                <input type="hidden" name="categoria" value="{{ categoria_actual }}">
+                <input type="hidden" name="precio" value="{{ precio_actual }}">
+                <select name="orden" onchange="document.getElementById('form-orden').submit()">
+                    <option value="nuevo" {% if orden == 'nuevo' %}selected{% endif %}>Más nuevos</option>
+                    <option value="precio_asc" {% if orden == 'precio_asc' %}selected{% endif %}>Precio: menor a mayor</option>
+                    <option value="precio_desc" {% if orden == 'precio_desc' %}selected{% endif %}>Precio: mayor a menor</option>
+                    <option value="nombre" {% if orden == 'nombre' %}selected{% endif %}>Nombre A–Z</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- Tarjetas -->
+        <div class="grid-productos">
+            {% for producto in productos %}
+            <div class="card-producto">
+                <div class="card-imagen-wrap">
+                    <a href="{% url 'producto_detalle' producto.id %}">
+                        <img src="{% if producto.imagen_url %}{{ producto.imagen_url }}{% else %}{{ producto.imagen.url }}{% endif %}" alt="{{ producto.nombre }}">
+                    </a>
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'agregar_wishlist' producto.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-wishlist" data-id="{{ producto.id }}" aria-label="Agregar a wishlist">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                            </svg>
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if producto.es_nuevo %}
+                    <span class="tag-nuevo">Nuevo</span>
+                    {% endif %}
+                </div>
+                <div class="card-info">
+                    <p class="card-nombre">{{ producto.nombre }}</p>
+                    <span class="card-precio">${{ producto.precio }} MXN</span>
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'agregar_carrito' producto.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-agregar">Agregar al carrito</button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn-agregar btn-agregar-login">Acceder para comprar</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="sin-resultados">
+                <p>No encontramos productos con esos filtros.</p>
+                <a href="{% url 'productos' %}">Ver todos los productos</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Paginación -->
+        {% if productos.has_other_pages %}
+        <div class="paginacion">
+            {% if productos.has_previous %}
+            <a href="?page={{ productos.previous_page_number }}&q={{ q|default:''|urlencode }}&categoria={{ categoria_actual }}&precio={{ precio_actual }}&orden={{ orden }}" class="pag-btn">← Anterior</a>
+            {% endif %}
+
+            {% for num in productos.paginator.page_range %}
+                {% if productos.number == num %}
+                <span class="pag-num activo">{{ num }}</span>
+                {% else %}
+                <a href="?page={{ num }}&q={{ q|default:''|urlencode }}&categoria={{ categoria_actual }}&precio={{ precio_actual }}&orden={{ orden }}" class="pag-num">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if productos.has_next %}
+            <a href="?page={{ productos.next_page_number }}&q={{ q|default:''|urlencode }}&categoria={{ categoria_actual }}&precio={{ precio_actual }}&orden={{ orden }}" class="pag-btn">Siguiente →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div><!-- /productos-grid-area -->
+</div><!-- /productos-layout -->
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-marca">
+            <span class="logo">FFeme Heels</span>
+            <p>Elegancia en cada paso.</p>
+        </div>
+        <div class="footer-links">
+            <a href="{% url 'sobre_nosotras' %}">Sobre nosotras</a>
+            <a href="#">Envíos</a>
+            <a href="#">Devoluciones</a>
+            <a href="#">Contacto</a>
+        </div>
+    </div>
+    <div class="footer-copy">&copy; {% now "Y" %} FFeme Heels.</div>
+</footer>
+
+<script>
+(function () {
+    const overlay = document.getElementById('search-overlay');
+    const input = document.getElementById('global-search-input');
+    const form = document.getElementById('global-search-form');
+    const closeBtn = document.getElementById('search-close');
+    const toggles = document.querySelectorAll('.js-search-toggle');
+    const recientesList = document.getElementById('search-recientes-list');
+    const sugerenciasList = document.getElementById('search-sugerencias-list');
+
+    let currentSuggestions = [];
+    let activeIndex = -1;
+    let debounceId = null;
+
+    function csrfToken() {
+        const match = document.cookie.match(/csrftoken=([^;]+)/);
+        return match ? match[1] : '';
+    }
+
+    function openSearch() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        setTimeout(() => input.focus(), 0);
+        cargarSugerencias(input.value || '');
+    }
+
+    function closeSearch() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        activeIndex = -1;
+    }
+
+    function renderList(el, items, emptyText) {
+        el.innerHTML = '';
+        if (!items.length) {
+            const li = document.createElement('li');
+            li.className = 'search-empty';
+            li.textContent = emptyText;
+            el.appendChild(li);
+            return;
+        }
+        items.forEach((txt, idx) => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'search-item';
+            btn.textContent = txt;
+            btn.addEventListener('click', () => {
+                input.value = txt;
+                form.submit();
+            });
+            if (el.id === 'search-sugerencias-list' && idx === activeIndex) {
+                btn.classList.add('active');
+            }
+            li.appendChild(btn);
+            el.appendChild(li);
+        });
+    }
+
+    async function cargarSugerencias(q) {
+        const res = await fetch(`{% url 'buscar_sugerencias' %}?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        currentSuggestions = data.sugerencias || [];
+        activeIndex = -1;
+        renderList(recientesList, data.recientes || [], 'Sin búsquedas recientes');
+        renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+    }
+
+    toggles.forEach(btn => btn.addEventListener('click', openSearch));
+    closeBtn.addEventListener('click', closeSearch);
+
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeSearch();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeSearch();
+    });
+
+    input.addEventListener('input', function () {
+        clearTimeout(debounceId);
+        debounceId = setTimeout(() => cargarSugerencias(input.value), 180);
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if (!currentSuggestions.length) return;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = (activeIndex + 1) % currentSuggestions.length;
+            renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = (activeIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+            renderList(sugerenciasList, currentSuggestions, 'Sin sugerencias');
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            input.value = currentSuggestions[activeIndex];
+            form.submit();
+        }
+    });
+
+    form.addEventListener('submit', async function () {
+        const q = input.value.trim();
+        if (!q) return;
+        try {
+            await fetch('{% url "busquedas_recientes" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    'X-CSRFToken': csrfToken(),
+                },
+                body: `q=${encodeURIComponent(q)}`
+            });
+        } catch (e) {}
+    });
+})();
+</script>
+</body>
+</html>
