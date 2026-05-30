@@ -1,12 +1,29 @@
 from django.contrib import admin
 
-from .models import DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, Producto
+from .models import Categoria, DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, Producto, SubCategoria
+
+
+class SubCategoriaInline(admin.TabularInline):
+    model = SubCategoria
+    extra = 1
+
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ("nombre",)
+    inlines = [SubCategoriaInline]
+
+
+@admin.register(SubCategoria)
+class SubCategoriaAdmin(admin.ModelAdmin):
+    list_display = ("nombre", "categoria")
+    list_filter = ("categoria",)
 
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "color", "talla", "precio", "destacado", "creado_en")
-    list_filter = ("color", "talla", "destacado")
+    list_display = ("nombre", "subcategoria", "color", "talla", "precio", "destacado", "creado_en")
+    list_filter = ("subcategoria__categoria", "subcategoria", "color", "talla", "destacado")
     search_fields = ("nombre", "descripcion")
 
 

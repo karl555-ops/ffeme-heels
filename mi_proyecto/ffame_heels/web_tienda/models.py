@@ -2,6 +2,31 @@ from django.conf import settings
 from django.db import models
 
 
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=80)
+
+    class Meta:
+        ordering = ["nombre"]
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+    def __str__(self):
+        return self.nombre
+
+
+class SubCategoria(models.Model):
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name="subcategorias")
+    nombre = models.CharField(max_length=80)
+
+    class Meta:
+        ordering = ["nombre"]
+        verbose_name = "Subcategoría"
+        verbose_name_plural = "Subcategorías"
+
+    def __str__(self):
+        return f"{self.categoria.nombre} › {self.nombre}"
+
+
 class Producto(models.Model):
     COLOR_BLANCO = "blanco"
     COLOR_NEGRO = "negro"
@@ -29,6 +54,14 @@ class Producto(models.Model):
         (TALLA_6, "6"),
     ]
 
+    subcategoria = models.ForeignKey(
+        SubCategoria,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="productos",
+        verbose_name="Subcategoría",
+    )
     nombre = models.CharField(max_length=120)
     descripcion = models.CharField(max_length=255)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
