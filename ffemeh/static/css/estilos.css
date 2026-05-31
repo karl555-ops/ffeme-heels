@@ -1584,6 +1584,108 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* =========================================
+   PÁGINA: NOTIFICACIONES
+   ========================================= */
+.notif-main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    min-height: calc(100vh - 64px - 200px);
+}
+
+.notif-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gris-borde);
+}
+
+.notif-titulo {
+    font-family: var(--fuente-titulo);
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.notif-count {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+}
+
+.notif-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.notif-card {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 20px 24px;
+    background: #fff;
+    border-left-width: 3px;
+}
+
+.notif-tipo--pedido { border-left-color: var(--negro); }
+.notif-tipo--promo  { border-left-color: #c9a96e; }
+.notif-tipo--info   { border-left-color: #b0b0b0; }
+
+.notif-icono {
+    flex-shrink: 0;
+    color: #888;
+    margin-top: 2px;
+}
+.notif-tipo--pedido .notif-icono { color: var(--negro); }
+.notif-tipo--promo  .notif-icono { color: #c9a96e; }
+
+.notif-cuerpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notif-card-titulo {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--negro);
+    margin: 0;
+}
+
+.notif-card-mensaje {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.notif-fecha {
+    font-size: 11px;
+    color: #bbb;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+}
+
+.notif-vacia {
+    text-align: center;
+    padding: 60px 20px;
+    color: #bbb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+.notif-vacia p { font-size: 15px; color: #999; }
+
+/* =========================================
    PÁGINA: PERFIL
    ========================================= */
 .perfil-page { background: #fff; }

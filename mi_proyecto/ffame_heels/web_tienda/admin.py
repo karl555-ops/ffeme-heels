@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Categoria, DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto, SubCategoria
+from .models import Categoria, DireccionEnvio, Factura, Notificacion, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto, SubCategoria
 
 
 class SubCategoriaInline(admin.TabularInline):
@@ -52,6 +52,13 @@ class PagoTarjetaAdmin(admin.ModelAdmin):
     list_display = ("orden", "marca", "tipo", "titular", "ultimos_4", "referencia", "creado_en")
     list_filter = ("marca", "tipo", "creado_en")
     search_fields = ("titular", "ultimos_4", "referencia")
+
+
+@admin.register(Notificacion)
+class NotificacionAdmin(admin.ModelAdmin):
+    list_display = ("titulo", "usuario", "tipo", "leida", "creada_en")
+    list_filter = ("tipo", "leida", "creada_en")
+    search_fields = ("titulo", "mensaje", "usuario__username")
 
 
 @admin.register(PerfilUsuario)

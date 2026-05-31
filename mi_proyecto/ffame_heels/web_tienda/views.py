@@ -9,7 +9,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import LoginForm, RegistroForm
-from .models import Categoria, DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto
+from .models import Categoria, DireccionEnvio, Factura, Notificacion, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto
 
 
 User = get_user_model()
@@ -497,31 +497,12 @@ def soporte(request):
 
 @login_required(login_url="login")
 def notificaciones(request):
-    notificaciones_data = [
-        {
-            "titulo": "Bienvenida a FFeme Heels",
-            "mensaje": "Tu cuenta está activa. Explora nuestras novedades y colecciones.",
-            "tipo": "info",
-        },
-        {
-            "titulo": "Wishlist disponible",
-            "mensaje": "Ahora puedes guardar tus productos favoritos en tu wishlist.",
-            "tipo": "wishlist",
-        },
-        {
-            "titulo": "Envío gratis",
-            "mensaje": "Obtén envío gratis en compras mayores a $6,000 MXN.",
-            "tipo": "promo",
-        },
-    ]
-    return render(
-        request,
-        "notificaciones.html",
-        {
-            "notificaciones": notificaciones_data,
-            "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
-        },
-    )
+    notifs = Notificacion.objects.filter(usuario=request.user)
+    notifs.update(leida=True)
+    return render(request, "notificaciones.html", {
+        "notificaciones": notifs,
+        "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
+    })
 
 
 def carrito(request):
@@ -692,6 +673,17 @@ def checkout_envio_pago(request):
                 razon_social=razon_social,
                 rfc=rfc,
             )
+
+            if request.user.is_authenticated:
+                Notificacion.objects.create(
+                    usuario=request.user,
+                    titulo="Pedido confirmado ✓",
+                    mensaje=(
+                        f"Tu pedido #{orden.id} por ${orden.total} MXN ha sido confirmado "
+                        f"y está siendo procesado. Folio de factura: {folio}."
+                    ),
+                    tipo=Notificacion.TIPO_PEDIDO,
+                )
 
             _guardar_carrito_sesion(request, {})
             messages.success(request, "Pedido confirmado. Tu factura se generó correctamente.")

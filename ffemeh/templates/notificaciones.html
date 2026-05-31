@@ -1,10 +1,10 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notificaciones | FFeme Heels</title>
+    <title>Notificaciones — FFeme Heels</title>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -52,20 +52,52 @@
     </div>
 </header>
 
-<main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
-    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 20px;">Notificaciones</h1>
+<main class="notif-main">
+    <div class="notif-header">
+        <h1 class="notif-titulo">Notificaciones</h1>
+        <span class="notif-count">{{ notificaciones|length }} mensaje{{ notificaciones|length|pluralize }}</span>
+    </div>
 
     {% if notificaciones %}
-        <div style="display: grid; gap: 16px;">
+        <div class="notif-lista">
             {% for n in notificaciones %}
-                <article style="border: 1px solid #e7e1db; border-radius: 12px; padding: 16px; background: #fff;">
-                    <h2 style="margin: 0 0 8px 0; font-size: 1.25rem;">{{ n.titulo }}</h2>
-                    <p style="margin: 0; color: #444;">{{ n.mensaje }}</p>
-                </article>
+            <article class="notif-card notif-tipo--{{ n.tipo }}">
+                <div class="notif-icono">
+                    {% if n.tipo == "pedido" %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    {% elif n.tipo == "promo" %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {% endif %}
+                </div>
+                <div class="notif-cuerpo">
+                    <p class="notif-card-titulo">{{ n.titulo }}</p>
+                    <p class="notif-card-mensaje">{{ n.mensaje }}</p>
+                    <span class="notif-fecha">{{ n.creada_en|date:"d/m/Y H:i" }}</span>
+                </div>
+            </article>
             {% endfor %}
         </div>
     {% else %}
-        <p>No tienes notificaciones por ahora.</p>
+        <div class="notif-vacia">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="52" height="52">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <p>No tienes notificaciones por ahora.</p>
+            <a href="{% url 'productos' %}" class="btn-negro">Explorar colecciones</a>
+        </div>
     {% endif %}
 </main>
 

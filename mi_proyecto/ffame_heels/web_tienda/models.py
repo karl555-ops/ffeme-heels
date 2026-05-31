@@ -166,6 +166,35 @@ class OrdenItem(models.Model):
         return f"{self.producto_nombre} x{self.cantidad}"
 
 
+class Notificacion(models.Model):
+    TIPO_PEDIDO = "pedido"
+    TIPO_INFO = "info"
+    TIPO_PROMO = "promo"
+
+    TIPO_CHOICES = [
+        (TIPO_PEDIDO, "Pedido"),
+        (TIPO_INFO, "Información"),
+        (TIPO_PROMO, "Promoción"),
+    ]
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notificaciones",
+    )
+    titulo = models.CharField(max_length=200)
+    mensaje = models.TextField()
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default=TIPO_INFO)
+    leida = models.BooleanField(default=False)
+    creada_en = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-creada_en"]
+
+    def __str__(self):
+        return f"{self.titulo} → {self.usuario.username}"
+
+
 class PerfilUsuario(models.Model):
     usuario = models.OneToOneField(
         settings.AUTH_USER_MODEL,
