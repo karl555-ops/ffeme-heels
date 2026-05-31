@@ -1233,7 +1233,8 @@ a { color: inherit; text-decoration: none; }
 /* Ajustes solicitados para detalle de producto */
 .detalle-acciones-columna {
     display: grid;
-    gap: 12px;
+    gap: 20px;
+    margin-top: 8px;
 }
 
 .btn-agregar-detalle {
