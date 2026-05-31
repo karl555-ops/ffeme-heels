@@ -1,15 +1,16 @@
-﻿{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil | FFeme Heels</title>
+    <title>Mi Perfil — FFeme Heels</title>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="perfil-page">
+
 <header class="barra">
     <div class="nav-izquierda">
         <a href="{% url 'productos' %}" class="nav-link">Colecciones</a>
@@ -19,23 +20,118 @@
         <a href="{% url 'index' %}">FFeme Heels</a>
     </div>
     <div class="nav-derecha">
-        <a href="{% url 'notificaciones' %}" class="nav-link">Notificaciones</a>
-        <a href="{% url 'carrito' %}" class="nav-link">Carrito ({{ carrito_count }})</a>
-        <a href="{% url 'logout' %}" class="nav-link">Cerrar sesión</a>
+        <a href="{% url 'carrito' %}" class="nav-icon carrito-icon" title="Carrito">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            {% if carrito_count > 0 %}<span class="badge">{{ carrito_count }}</span>{% endif %}
+        </a>
+        <a href="{% url 'logout' %}" class="nav-link" style="font-size:13px;letter-spacing:.06em;">Salir</a>
     </div>
 </header>
 
-<main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
-    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 20px;">Mi perfil</h1>
+<main class="perfil-main">
 
-    <section style="border: 1px solid #e7e1db; border-radius: 12px; padding: 20px; background: #fff;">
-        <p><strong>Usuario:</strong> {{ perfil_usuario.username }}</p>
-        <p><strong>Nombre:</strong> {{ perfil_usuario.first_name|default:"—" }}</p>
-        <p><strong>Apellido:</strong> {{ perfil_usuario.last_name|default:"—" }}</p>
-        <p><strong>Correo:</strong> {{ perfil_usuario.email|default:"—" }}</p>
-        <p><strong>Miembro desde:</strong> {{ perfil_usuario.date_joined|date:"d/m/Y H:i" }}</p>
-    </section>
+    <!-- Sección superior: foto + datos -->
+    <div class="perfil-top">
+        <div class="perfil-avatar-wrap">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'perfil' %}" id="foto-form">
+                {% csrf_token %}
+                {% if perfil_obj.foto %}
+                    <img src="{{ perfil_obj.foto.url }}" alt="Foto de perfil" class="perfil-avatar">
+                {% else %}
+                    <div class="perfil-avatar-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="48" height="48">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                {% endif %}
+                <input type="file" name="foto" id="foto-input" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                <label for="foto-input" class="perfil-foto-label">Cambiar foto</label>
+            </form>
+        </div>
+
+        <div class="perfil-info">
+            <h1 class="perfil-nombre">
+                {% if request.user.first_name %}{{ request.user.first_name }} {{ request.user.last_name }}{% else %}{{ request.user.username }}{% endif %}
+            </h1>
+            <div class="perfil-datos-grid">
+                <div class="perfil-dato">
+                    <span class="perfil-dato-label">Usuario</span>
+                    <span class="perfil-dato-valor">{{ request.user.username }}</span>
+                </div>
+                {% if request.user.first_name %}
+                <div class="perfil-dato">
+                    <span class="perfil-dato-label">Nombre</span>
+                    <span class="perfil-dato-valor">{{ request.user.first_name }}</span>
+                </div>
+                <div class="perfil-dato">
+                    <span class="perfil-dato-label">Apellido</span>
+                    <span class="perfil-dato-valor">{{ request.user.last_name|default:"—" }}</span>
+                </div>
+                {% endif %}
+                <div class="perfil-dato">
+                    <span class="perfil-dato-label">Correo</span>
+                    <span class="perfil-dato-valor">{{ request.user.email|default:"—" }}</span>
+                </div>
+                <div class="perfil-dato">
+                    <span class="perfil-dato-label">Miembro desde</span>
+                    <span class="perfil-dato-valor">{{ request.user.date_joined|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección pedidos -->
+    <div class="perfil-pedidos">
+        <h2 class="perfil-seccion-titulo">Mis pedidos</h2>
+
+        {% if ordenes %}
+            {% for orden in ordenes %}
+            <div class="pedido-card">
+                <div class="pedido-header">
+                    <div class="pedido-header-izq">
+                        <span class="pedido-numero">Pedido #{{ orden.id }}</span>
+                        <span class="pedido-fecha">{{ orden.creado_en|date:"d/m/Y" }}</span>
+                    </div>
+                    <span class="pedido-estado pedido-estado--{{ orden.estado_envio }}">{{ orden.get_estado_envio_display }}</span>
+                </div>
+
+                <ul class="pedido-items">
+                    {% for item in orden.items.all %}
+                    <li class="pedido-item">
+                        <span class="pedido-item-nombre">
+                            {{ item.producto_nombre }}
+                            {% if item.producto_talla %}<span class="pedido-item-talla">Talla {{ item.producto_talla }}</span>{% endif %}
+                            <span class="pedido-item-qty">× {{ item.cantidad }}</span>
+                        </span>
+                        <span class="pedido-item-precio">${{ item.subtotal }} MXN</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="pedido-footer">
+                    <span></span>
+                    <span class="pedido-total">Total: <strong>${{ orden.total }} MXN</strong></span>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="perfil-sin-pedidos">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" width="48" height="48">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                <p>Aún no tienes pedidos registrados.</p>
+                <a href="{% url 'productos' %}" class="btn-negro">Explorar colecciones</a>
+            </div>
+        {% endif %}
+    </div>
+
 </main>
+
 <footer class="footer">
     <div class="footer-inner">
         <div class="footer-marca">
@@ -67,5 +163,6 @@
         &copy; {% now "Y" %} FFeme Heels. Todos los derechos reservados.
     </div>
 </footer>
+
 </body>
 </html>

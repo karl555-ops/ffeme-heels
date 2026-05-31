@@ -166,6 +166,18 @@ class OrdenItem(models.Model):
         return f"{self.producto_nombre} x{self.cantidad}"
 
 
+class PerfilUsuario(models.Model):
+    usuario = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="perfil",
+    )
+    foto = models.ImageField(upload_to="perfiles/", blank=True, null=True)
+
+    def __str__(self):
+        return f"Perfil de {self.usuario.username}"
+
+
 class Factura(models.Model):
     orden = models.OneToOneField(Orden, on_delete=models.CASCADE, related_name="factura")
     folio = models.CharField(max_length=30, unique=True)

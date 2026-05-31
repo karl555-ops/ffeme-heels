@@ -1575,6 +1575,225 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* =========================================
+   PÁGINA: PERFIL
+   ========================================= */
+.perfil-page { background: #fff; }
+
+.perfil-main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    min-height: calc(100vh - 64px - 200px);
+}
+
+.perfil-top {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--gris-borde);
+}
+
+.perfil-avatar-wrap {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.perfil-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--gris-borde);
+}
+
+.perfil-avatar-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #f5f2ef;
+    border: 1px solid var(--gris-borde);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+}
+
+.perfil-foto-label {
+    font-family: var(--fuente-cuerpo);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+.perfil-foto-label:hover { color: var(--negro); }
+
+.perfil-nombre {
+    font-family: var(--fuente-titulo);
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0 0 20px;
+    letter-spacing: 0.02em;
+}
+
+.perfil-datos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+}
+
+.perfil-dato {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.perfil-dato-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #999;
+    font-family: var(--fuente-cuerpo);
+}
+
+.perfil-dato-valor {
+    font-size: 14px;
+    color: var(--negro);
+    font-family: var(--fuente-cuerpo);
+}
+
+.perfil-seccion-titulo {
+    font-family: var(--fuente-titulo);
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    margin: 0 0 24px;
+}
+
+.pedido-card {
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    background: #fff;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f0ece8;
+}
+
+.pedido-header-izq {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pedido-numero {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--negro);
+}
+
+.pedido-fecha {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.pedido-estado {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: #f5f2ef;
+    color: #666;
+}
+.pedido-estado--enviado { background: #e8f5e9; color: #2e7d32; }
+.pedido-estado--entregado { background: #e3f2fd; color: #1565c0; }
+.pedido-estado--preparando { background: #fff8e1; color: #f57f17; }
+.pedido-estado--pendiente { background: #f5f2ef; color: #888; }
+
+.pedido-items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+}
+
+.pedido-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid #f7f5f3;
+    font-size: 14px;
+}
+.pedido-item:last-child { border-bottom: none; }
+
+.pedido-item-nombre { color: var(--negro); }
+
+.pedido-item-talla {
+    font-size: 11px;
+    color: #999;
+    margin: 0 6px;
+}
+
+.pedido-item-qty {
+    font-size: 12px;
+    color: #bbb;
+}
+
+.pedido-item-precio {
+    color: var(--negro);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #f0ece8;
+}
+
+.pedido-total {
+    font-size: 14px;
+    color: var(--negro);
+}
+
+.perfil-sin-pedidos {
+    text-align: center;
+    padding: 60px 20px;
+    color: #bbb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+.perfil-sin-pedidos p { font-size: 15px; color: #999; }
+
+@media (max-width: 600px) {
+    .perfil-top { flex-direction: column; align-items: center; text-align: center; }
+    .perfil-datos-grid { grid-template-columns: 1fr; }
+    .perfil-nombre { font-size: 1.6rem; }
+}
+
+/* =========================================
    RESPONSIVE
    ========================================= */
 /* =========================================

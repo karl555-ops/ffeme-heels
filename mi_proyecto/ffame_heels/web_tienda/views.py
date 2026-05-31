@@ -9,7 +9,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import LoginForm, RegistroForm
-from .models import DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, Producto
+from .models import DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto
 
 
 User = get_user_model()
@@ -578,20 +578,20 @@ def eliminar_carrito(request, producto_id):
 @login_required(login_url="login")
 def perfil(request):
     user = request.user
-    return render(
-        request,
-        "perfil.html",
-        {
-            "perfil_usuario": {
-                "username": user.username,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "date_joined": user.date_joined,
-            },
-            "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
-        },
-    )
+    perfil_obj, _ = PerfilUsuario.objects.get_or_create(usuario=user)
+
+    if request.method == "POST" and request.FILES.get("foto"):
+        perfil_obj.foto = request.FILES["foto"]
+        perfil_obj.save()
+        return redirect("perfil")
+
+    ordenes = Orden.objects.filter(usuario=user).prefetch_related("items")
+
+    return render(request, "perfil.html", {
+        "perfil_obj": perfil_obj,
+        "ordenes": ordenes,
+        "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
+    })
 
 
 def checkout_envio_pago(request):
