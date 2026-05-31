@@ -476,6 +476,24 @@ def sobre_nosotras(request):
     )
 
 
+def devoluciones(request):
+    return render(request, "devoluciones.html", {
+        "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
+    })
+
+
+def envios(request):
+    return render(request, "envios.html", {
+        "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
+    })
+
+
+def soporte(request):
+    return render(request, "soporte.html", {
+        "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
+    })
+
+
 @login_required(login_url="login")
 def notificaciones(request):
     notificaciones_data = [

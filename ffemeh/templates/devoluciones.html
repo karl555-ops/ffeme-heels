@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nosotras — FFeme Heels</title>
+    <title>Devoluciones — FFeme Heels</title>
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -23,59 +23,47 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
-            {% if carrito_count > 0 %}
-            <span class="badge">{{ carrito_count }}</span>
-            {% endif %}
+            {% if carrito_count > 0 %}<span class="badge">{{ carrito_count }}</span>{% endif %}
         </a>
     </div>
 </header>
 
-<section class="sobre-hero" style="background-image: url('{% static 'imagenes/banner3.jpg' %}');">
-    <div class="sobre-hero-overlay"></div>
-    <div class="sobre-hero-content">
-        <span class="sobre-subtitulo">Conoce nuestra esencia</span>
-        <h1>Grupo FFeme Heels</h1>
-        <p>Elegancia, estilo y confianza en cada paso.</p>
+<section class="page-hero">
+    <div class="page-hero-content">
+        <span class="sobre-subtitulo">Políticas de la tienda</span>
+        <h1>Política de Devoluciones</h1>
     </div>
 </section>
 
 <main class="sobre-main">
     <section class="sobre-card">
-        <h2>Sobre Nosotros</h2>
+        <h2>Sin devoluciones ni cambios</h2>
         <p>
-            En FFame Heels, creemos que cada paso que das es una oportunidad para expresar tu estilo, seguridad y esencia.
-            Somos una tienda de e-commerce especializada en calzado elegante femenino, creada para mujeres que buscan
-            destacar con sofisticación en cada ocasión.
+            En FFeme Heels, todos nuestros productos son revisados cuidadosamente antes de ser enviados.
+            Por esa razón, <strong>no aceptamos devoluciones ni cambios</strong> una vez que el pedido ha sido confirmado y enviado.
         </p>
         <p>
-            Nuestra pasión por la moda y el diseño nos impulsa a seleccionar cuidadosamente cada par de zapatos, combinando
-            tendencias actuales con comodidad y calidad. Desde tacones clásicos hasta diseños modernos y audaces, nuestra
-            colección está pensada para acompañarte en eventos especiales, reuniones importantes o simplemente para elevar
-            tu día a día.
+            Te invitamos a revisar con detenimiento las especificaciones de cada producto — talla, color y descripción — antes de finalizar tu compra.
+            Si tienes alguna duda, escríbenos antes de ordenar y con gusto te orientamos.
         </p>
         <p>
-            Nos enfocamos en ofrecer una experiencia de compra fácil, segura y accesible, brindando atención personalizada
-            y productos que cumplen con los más altos estándares. Sabemos que el calzado no es solo un complemento, sino
-            una declaración de estilo y confianza.
-        </p>
-        <p>
-            En FFame Heels, caminamos contigo hacia una versión más segura, elegante y auténtica de ti misma.
+            Al realizar tu compra, aceptas esta política de no devoluciones.
         </p>
     </section>
 
     <section class="sobre-grid">
         <article class="sobre-bloque">
-            <h3>Nuestra Misión</h3>
+            <h3>Casos excepcionales</h3>
             <p>
-                Ofrecer calzado elegante de alta calidad que resalte la belleza y confianza de cada mujer, a través de una
-                experiencia de compra en línea eficiente y confiable.
+                Únicamente se evaluarán casos donde el producto presente un defecto de fabricación comprobable.
+                Deberás comunicarte dentro de las <strong>24 horas</strong> posteriores a la recepción del pedido, con evidencia fotográfica.
             </p>
         </article>
         <article class="sobre-bloque">
-            <h3>Nuestra Visión</h3>
+            <h3>¿Tienes un problema?</h3>
             <p>
-                Ser una marca reconocida en el mundo del calzado femenino, destacando por nuestro estilo, innovación y
-                compromiso con nuestras clientas.
+                Contáctanos directamente por correo electrónico y lo resolveremos a la brevedad.<br>
+                <a href="mailto:ffemeheels@gmail.com" class="link-email">ffemeheels@gmail.com</a>
             </p>
         </article>
     </section>

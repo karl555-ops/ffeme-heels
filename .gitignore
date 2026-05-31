@@ -29,10 +29,16 @@ local_settings.py
 db.sqlite3
 media/
 
-# Variables de entorno y secretos
+# Variables de entorno y secretos (NUNCA subir a GitHub)
 .env
 .env.*
 secrets.json
+
+# Archivos estáticos recolectados por collectstatic
+staticfiles/
+
+# Archivos de media subidos por usuarios
+media/
 
 # IDEs
 .vscode/

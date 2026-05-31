@@ -22,4 +22,7 @@ urlpatterns = [
     path("checkout/", views.checkout_envio_pago, name="checkout_envio_pago"),
     path("factura/<int:orden_id>/", views.factura_detalle, name="factura_detalle"),
     path("producto/<str:producto_id>/", views.producto_detalle, name="producto_detalle"),
+    path("devoluciones/", views.devoluciones, name="devoluciones"),
+    path("envios/", views.envios, name="envios"),
+    path("soporte/", views.soporte, name="soporte"),
 ]
