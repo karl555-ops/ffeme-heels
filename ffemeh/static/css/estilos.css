@@ -1603,9 +1603,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 .notif-titulo {
-    font-family: var(--fuente-titulo);
-    font-size: 2rem;
+    font-family: var(--font-display);
+    font-size: 42px;
     font-weight: 300;
+    letter-spacing: 1px;
     margin: 0;
     letter-spacing: 0.02em;
 }
@@ -1735,7 +1736,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .perfil-foto-label {
-    font-family: var(--fuente-cuerpo);
+    font-family: var(--font-body);
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1747,9 +1748,10 @@ a { color: inherit; text-decoration: none; }
 .perfil-foto-label:hover { color: var(--negro); }
 
 .perfil-nombre {
-    font-family: var(--fuente-titulo);
-    font-size: 2rem;
+    font-family: var(--font-display);
+    font-size: 42px;
     font-weight: 300;
+    letter-spacing: 1px;
     margin: 0 0 20px;
     letter-spacing: 0.02em;
 }
@@ -1771,19 +1773,20 @@ a { color: inherit; text-decoration: none; }
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #999;
-    font-family: var(--fuente-cuerpo);
+    font-family: var(--font-body);
 }
 
 .perfil-dato-valor {
     font-size: 14px;
     color: var(--negro);
-    font-family: var(--fuente-cuerpo);
+    font-family: var(--font-body);
 }
 
 .perfil-seccion-titulo {
-    font-family: var(--fuente-titulo);
-    font-size: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 28px;
     font-weight: 300;
+    letter-spacing: 0.5px;
     letter-spacing: 0.03em;
     margin: 0 0 24px;
 }
