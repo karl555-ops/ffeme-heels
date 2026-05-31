@@ -100,7 +100,7 @@
                 <label><input type="radio" name="categoria" value="" {% if not categoria_actual %}checked{% endif %}> Todas</label>
                 {% for cat in categorias %}
                 <label>
-                    <input type="radio" name="categoria" value="{{ cat.slug }}" {% if categoria_actual == cat.slug %}checked{% endif %}>
+                    <input type="radio" name="categoria" value="{{ cat.id }}" {% if categoria_actual == cat.id|stringformat:"s" %}checked{% endif %}>
                     {{ cat.nombre }}
                 </label>
                 {% endfor %}

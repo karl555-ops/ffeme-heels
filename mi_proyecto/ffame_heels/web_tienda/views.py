@@ -9,7 +9,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import LoginForm, RegistroForm
-from .models import DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto
+from .models import Categoria, DireccionEnvio, Factura, Orden, OrdenItem, PagoTarjeta, PerfilUsuario, Producto
 
 
 User = get_user_model()
@@ -64,10 +64,10 @@ PRODUCTOS_MOCK = [
 ]
 
 CATEGORIAS_MOCK = [
-    {"slug": "siletto", "nombre": "Siletto"},
-    {"slug": "kitten", "nombre": "Kitten"},
-    {"slug": "botin", "nombre": "Botines"},
-    {"slug": "bota", "nombre": "Botas"},
+    {"id": "siletto", "nombre": "Stiletto"},
+    {"id": "kitten", "nombre": "Kitten"},
+    {"id": "botin", "nombre": "Botines"},
+    {"id": "bota", "nombre": "Botas Altas"},
 ]
 
 
@@ -117,6 +117,7 @@ def _serialize_producto_mock(producto):
 
 
 def _serialize_producto_real(producto):
+    sub = getattr(producto, "subcategoria", None)
     return {
         "id": str(producto.id),
         "nombre": producto.nombre,
@@ -126,7 +127,7 @@ def _serialize_producto_real(producto):
         "es_nuevo": getattr(producto, "es_nuevo", False),
         "is_mock": False,
         "imagen_url": producto.imagen.url if getattr(producto, "imagen", None) else "",
-        "categoria": "",
+        "categoria": str(sub.categoria_id) if sub else "",
         "destacado": getattr(producto, "destacado", False),
     }
 
@@ -144,7 +145,7 @@ def _producto_unificado_por_id(producto_id):
 
 
 def _catalogo_unificado():
-    productos_db = list(Producto.objects.all())
+    productos_db = list(Producto.objects.select_related("subcategoria__categoria").all())
     if productos_db:
         return [_serialize_producto_real(p) for p in productos_db], False
     return [_serialize_producto_mock(p) for p in PRODUCTOS_MOCK], True
@@ -335,7 +336,7 @@ def productos(request):
         {
             "productos": productos_page,
             "carrito_count": _carrito_items_y_totales(request)["carrito_count"],
-            "categorias": CATEGORIAS_MOCK if es_mock else [],
+            "categorias": CATEGORIAS_MOCK if es_mock else Categoria.objects.all(),
             "categoria_actual": categoria,
             "precio_actual": precio,
             "orden": orden if orden else "nuevo",
